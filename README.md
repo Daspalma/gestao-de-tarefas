@@ -1,71 +1,64 @@
-# Gestão de Tarefas - Estrutura Base Simplificada
+# Gestão de Tarefas (Prática SAEP)
 
-Este projeto foi construído seguindo a mesma arquitetura do seu projeto anterior ([praticaSaep](https://github.com/VictorDiasQueiroz12/praticaSaep.git)), porém com uma **estrutura bem mais simples, limpa e comentada**, ideal para você entender cada parte e começar a modificar rapidamente.
+Sistema simples e direto para gestão de tarefas e atividades de equipes, desenvolvido com arquitetura Node.js (Express), PostgreSQL e Frontend em HTML/CSS/JavaScript puro.
 
 ---
 
-## 📁 Estrutura do Projeto
+## 📁 Estrutura de Arquivos
 
 ```text
 gestaodetarefas/
 │
-├── public/                 # Frontend (HTML, CSS e JS puro)
+├── public/                 # Interface Web Simples e Direta
 │   ├── css/
-│   │   └── style.css       # Estilos visuais simples e modernos
+│   │   └── style.css       # Estilos visuais minimalistas e funcionais
 │   ├── js/
-│   │   ├── funcoes.js      # Função auxiliar (chamandoServer, logout, etc.)
-│   │   ├── login.js        # Lógica da tela de login
-│   │   └── tarefas.js      # CRUD completo de tarefas
-│   ├── index.html          # Painel inicial / Dashboard
-│   ├── login.html          # Página de login
-│   └── tarefas.html        # Página com formulário e listagem
+│   │   ├── funcoes.js      # Função auxiliar (chamandoServer, boas-vindas, logout)
+│   │   ├── login.js        # Lógica de login
+│   │   ├── tarefas.js      # CRUD completo de tarefas
+│   │   └── usuarios.js     # Gerenciamento de usuários
+│   ├── index.html          # Dashboard inicial com resumo
+│   ├── login.html          # Tela de login
+│   ├── tarefas.html        # Cadastro e listagem de tarefas
+│   └── usuarios.html       # Cadastro e listagem de usuários
 │
-├── db.js                   # Conexão com o banco PostgreSQL (Pool pg)
-├── server.js               # Servidor Express (API REST e arquivos estáticos)
-├── sql.sql                 # Script SQL para criação das tabelas e dados de teste
-├── .env                    # Configurações de ambiente (portas e credenciais do banco)
-├── .env.example            # Modelo de configuração
-├── .gitignore              # Arquivos ignorados pelo Git
-└── package.json            # Dependências e scripts do Node.js
+├── db.js                   # Conexão com PostgreSQL (Pool pg)
+├── server.js               # Servidor Express e rotas da API
+├── sql.sql                 # Script SQL para criar banco e dados de teste
+├── .env                    # Configuração de credenciais do banco
+├── .env.example            # Exemplo de configuração
+├── .gitignore              # Ignora node_modules e .env
+└── package.json            # Dependências e scripts
 ```
 
 ---
 
-## 🚀 Como Executar o Projeto
+## 🚀 Como Executar
 
 ### 1. Banco de Dados (PostgreSQL)
-1. Abra o **pgAdmin** ou o terminal `psql`.
-2. Crie o banco de dados (se ainda não existir):
+1. Crie o banco de dados no PostgreSQL:
    ```sql
    CREATE DATABASE gestao_tarefas;
    ```
-3. Execute os comandos que estão no arquivo [`sql.sql`](sql.sql).
-4. Verifique no arquivo [`.env`](.env) se o usuário e senha do PostgreSQL correspondem aos da sua máquina (padrão: `user: postgres`, `password: senai`, `port: 5432`).
+2. Execute o conteúdo de [`sql.sql`](sql.sql).
+3. Verifique se o seu usuário e senha no arquivo [`.env`](.env) estão corretos (padrão SENAI: `postgres` / `senai`).
 
-### 2. Iniciar o Servidor
-No terminal, execute:
+### 2. Iniciar a Aplicação
+No terminal do projeto:
 
 ```bash
 npm run dev
 ```
 
-O servidor iniciará em: **`http://localhost:3000`**
+Acesse no navegador: **`http://localhost:3000/login.html`**
 
 ---
 
-## 🔑 Credenciais Padrão para Teste
-
-Ao acessar [`http://localhost:3000/login.html`](http://localhost:3000/login.html):
+## 🔑 Usuários para Teste
 
 | Usuário | Login | Senha |
 |---|---|---|
 | Administrador | `admin` | `12345` |
-| Usuário Teste | `teste@gmail.com` | `12345` |
-
----
-
-## 🛠️ Como Personalizar ou Adicionar Novos Campos
-
-- **Mudar colunas do banco:** Altere o arquivo [`sql.sql`](sql.sql).
-- **Mudar rotas do backend:** Adicione ou edite as rotas em [`server.js`](server.js) (siga o mesmo padrão de `GET`, `POST`, `PUT`, `DELETE`).
-- **Mudar os campos da tela:** Atualize os inputs em [`public/tarefas.html`](public/tarefas.html) e a leitura dos campos em [`public/js/tarefas.js`](public/js/tarefas.js).
+| João Silva | `joao.silva` | `12345` |
+| Maria Santos | `maria.santos` | `12345` |
+| Carlos Oliveira | `carlos.oliveira` | `12345` |

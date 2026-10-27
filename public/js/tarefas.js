@@ -1,56 +1,55 @@
 let listaDeTarefas = []
 
-// 1. Carrega todas as tarefas do servidor e exibe na tabela
+// Carrega os usuários no select de responsável
+async function carregarUsuariosNoSelect() {
+    const usuarios = await chamandoServer('/usuario')
+    const select = document.getElementById('id_usuario')
+    
+    if (Array.isArray(usuarios)) {
+        select.innerHTML = '<option value="">-- Sem responsável --</option>' + 
+            usuarios.map(u => `<option value="${u.id}">${u.nome} (${u.login})</option>`).join('')
+    }
+}
+
+// Carrega todas as tarefas do servidor
 async function carregarTarefas() {
     const tabela = document.getElementById('tabela')
-    tabela.innerHTML = '<tr><td colspan="6" style="text-align: center;">Carregando tarefas...</td></tr>'
-
     listaDeTarefas = await chamandoServer('/tarefa')
 
     if (!Array.isArray(listaDeTarefas) || listaDeTarefas.length === 0) {
-        tabela.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #64748b;">Nenhuma tarefa cadastrada.</td></tr>'
+        tabela.innerHTML = '<tr><td colspan="8" style="text-align: center;">Nenhuma tarefa cadastrada.</td></tr>'
         return
     }
 
-    tabela.innerHTML = listaDeTarefas.map(tarefa => {
-        // Formatação simples de classes para badges
-        const classeStatus = tarefa.status === 'Concluída' 
-            ? 'badge-concluida' 
-            : (tarefa.status === 'Em Andamento' ? 'badge-andamento' : 'badge-pendente')
-
-        const classePrioridade = tarefa.prioridade === 'Alta' 
-            ? 'badge-alta' 
-            : (tarefa.prioridade === 'Média' ? 'badge-media' : 'badge-baixa')
-
-        return `
-            <tr>
-                <td><strong>#${tarefa.id}</strong></td>
-                <td>
-                    <strong>${tarefa.titulo}</strong>
-                    ${tarefa.descricao ? `<br><small style="color: #64748b;">${tarefa.descricao}</small>` : ''}
-                </td>
-                <td><span class="badge ${classeStatus}">${tarefa.status}</span></td>
-                <td><span class="badge ${classePrioridade}">${tarefa.prioridade}</span></td>
-                <td>${tarefa.responsavel || '-'}</td>
-                <td>
-                    <button type="button" class="btn-editar btn-sm" onclick="preencherFormulario(${tarefa.id})">Editar</button>
-                    <button type="button" class="btn-perigo btn-sm" onclick="excluirTarefa(${tarefa.id})">Excluir</button>
-                </td>
-            </tr>
-        `
-    }).join('')
+    tabela.innerHTML = listaDeTarefas.map(t => `
+        <tr>
+            <td>${t.id}</td>
+            <td>
+                <b>${t.titulo}</b>
+                ${t.descricao ? `<br><small style="color: #666;">${t.descricao}</small>` : ''}
+            </td>
+            <td>${t.setor}</td>
+            <td>${t.prioridade}</td>
+            <td><b>${t.status}</b></td>
+            <td>${t.data_limite || '-'}</td>
+            <td>${t.responsavel || '-'}</td>
+            <td>
+                <button type="button" class="btn-editar" onclick="preencherFormulario(${t.id})">Editar</button>
+                <button type="button" class="btn-excluir" onclick="excluirTarefa(${t.id})">Excluir</button>
+            </td>
+        </tr>
+    `).join('')
 }
 
-// 2. Limpa o formulário e reseta para modo de criação
+// Limpa o formulário
 function limparFormulario() {
     document.getElementById('formulario').reset()
     document.getElementById('id').value = ''
     document.getElementById('btnSalvar').textContent = 'Salvar Tarefa'
-    const btnCancelar = document.getElementById('btnCancelar')
-    if (btnCancelar) btnCancelar.style.display = 'none'
+    document.getElementById('btnCancelar').style.display = 'none'
 }
 
-// 3. Preenche o formulário para edição
+// Preenche os campos para edição
 function preencherFormulario(id) {
     const tarefa = listaDeTarefas.find(item => item.id == id)
     if (!tarefa) return
@@ -58,25 +57,27 @@ function preencherFormulario(id) {
     document.getElementById('id').value = tarefa.id
     document.getElementById('titulo').value = tarefa.titulo
     document.getElementById('descricao').value = tarefa.descricao || ''
-    document.getElementById('status').value = tarefa.status
-    document.getElementById('prioridade').value = tarefa.prioridade
+    document.getElementById('setor').value = tarefa.setor || 'Geral'
+    document.getElementById('prioridade').value = tarefa.prioridade || 'Média'
+    document.getElementById('status').value = tarefa.status || 'Pendente'
+    document.getElementById('data_limite').value = tarefa.data_limite || ''
+    document.getElementById('id_usuario').value = tarefa.id_usuario || ''
 
     document.getElementById('btnSalvar').textContent = 'Atualizar Tarefa'
-    const btnCancelar = document.getElementById('btnCancelar')
-    if (btnCancelar) btnCancelar.style.display = 'inline-block'
+    document.getElementById('btnCancelar').style.display = 'inline-block'
 
     window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
-// 4. Excluir uma tarefa
+// Excluir tarefa
 async function excluirTarefa(id) {
-    if (!confirm('Tem certeza que deseja excluir esta tarefa?')) return
+    if (!confirm('Deseja realmente excluir esta tarefa?')) return
 
     await chamandoServer('/tarefa/' + id, 'DELETE')
     carregarTarefas()
 }
 
-// 5. Envio do Formulário (Criar ou Atualizar)
+// Salvar (POST ou PUT)
 document.getElementById('formulario').onsubmit = async (evento) => {
     evento.preventDefault()
 
@@ -84,8 +85,11 @@ document.getElementById('formulario').onsubmit = async (evento) => {
     const dados = {
         titulo: document.getElementById('titulo').value.trim(),
         descricao: document.getElementById('descricao').value.trim(),
+        setor: document.getElementById('setor').value,
+        prioridade: document.getElementById('prioridade').value,
         status: document.getElementById('status').value,
-        prioridade: document.getElementById('prioridade').value
+        data_limite: document.getElementById('data_limite').value || null,
+        id_usuario: document.getElementById('id_usuario').value || null
     }
 
     if (!dados.titulo) {
@@ -94,10 +98,8 @@ document.getElementById('formulario').onsubmit = async (evento) => {
     }
 
     if (id) {
-        // Atualização (PUT)
         await chamandoServer('/tarefa/' + id, 'PUT', dados)
     } else {
-        // Criação (POST)
         await chamandoServer('/tarefa', 'POST', dados)
     }
 
@@ -105,5 +107,6 @@ document.getElementById('formulario').onsubmit = async (evento) => {
     carregarTarefas()
 }
 
-// Carrega as tarefas ao abrir a página
+// Inicialização
+carregarUsuariosNoSelect()
 carregarTarefas()

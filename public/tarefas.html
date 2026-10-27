@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,87 +8,99 @@
 </head>
 <body>
     <nav>
-        <a href="index.html" class="brand">Gestão de Tarefas</a>
-        <div class="menu">
-            <a href="index.html">Início</a>
-            <a href="tarefas.html" class="active">Tarefas</a>
-            <a href="#" onclick="fazerLogout()" class="btn-sair">Sair</a>
-        </div>
+        <a href="index.html">Início</a>
+        <a href="tarefas.html">Tarefas</a>
+        <a href="usuarios.html">Usuários</a>
+        <a href="#" onclick="fazerLogout()" class="sair">Sair</a>
     </nav>
 
-    <div class="container">
-        <!-- Card de Formulário (Cadastrar / Editar) -->
-        <div class="card">
-            <h2>Gerenciar Tarefa</h2>
-            <p class="subtitulo">Preencha os campos abaixo para adicionar ou atualizar uma tarefa.</p>
+    <div class="conteudo">
+        <h2>Cadastro de Tarefa</h2>
+        <p>Preencha os dados abaixo para cadastrar ou editar uma tarefa.</p>
 
-            <form id="formulario">
-                <input type="hidden" id="id">
+        <form id="formulario">
+            <input type="hidden" id="id">
 
-                <div>
-                    <label>
-                        Título da Tarefa *
-                        <input id="titulo" placeholder="Ex: Criar componente de login" required>
-                    </label>
-                </div>
-
-                <div>
-                    <label>
-                        Descrição
-                        <textarea id="descricao" placeholder="Detalhes adicionais da tarefa..." rows="2"></textarea>
-                    </label>
-                </div>
-
-                <div class="form-grid">
-                    <label>
-                        Status
-                        <select id="status">
-                            <option value="Pendente">Pendente</option>
-                            <option value="Em Andamento">Em Andamento</option>
-                            <option value="Concluída">Concluída</option>
-                        </select>
-                    </label>
-
-                    <label>
-                        Prioridade
-                        <select id="prioridade">
-                            <option value="Baixa">Baixa</option>
-                            <option value="Média" selected>Média</option>
-                            <option value="Alta">Alta</option>
-                        </select>
-                    </label>
-                </div>
-
-                <div class="acoes-form">
-                    <button type="submit" id="btnSalvar">Salvar Tarefa</button>
-                    <button type="button" id="btnCancelar" class="btn-secundario" style="display: none;" onclick="limparFormulario()">Cancelar</button>
-                </div>
-            </form>
-        </div>
-
-        <!-- Card da Tabela de Tarefas -->
-        <div class="card">
-            <h2>Lista de Tarefas</h2>
-            <p class="subtitulo">Todas as tarefas registradas no sistema.</p>
-
-            <div class="table-responsive">
-                <table>
-                    <thead>
-                        <tr>
-                            <th style="width: 60px;">ID</th>
-                            <th>Título & Descrição</th>
-                            <th style="width: 140px;">Status</th>
-                            <th style="width: 110px;">Prioridade</th>
-                            <th style="width: 140px;">Responsável</th>
-                            <th style="width: 150px;">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabela">
-                        <!-- Linhas geradas dinamicamente pelo JavaScript -->
-                    </tbody>
-                </table>
+            <div class="campo">
+                <label>Título da Tarefa:</label>
+                <input id="titulo" type="text" placeholder="Ex: Desenvolver nova funcionalidade" required>
             </div>
-        </div>
+
+            <div class="campo">
+                <label>Descrição detalhada:</label>
+                <textarea id="descricao" rows="2" placeholder="Descreva brevemente o que precisa ser feito"></textarea>
+            </div>
+
+            <div class="linha-dupla">
+                <div class="campo">
+                    <label>Setor / Área:</label>
+                    <select id="setor">
+                        <option value="Geral">Geral</option>
+                        <option value="Desenvolvimento">Desenvolvimento</option>
+                        <option value="Infraestrutura">Infraestrutura</option>
+                        <option value="Suporte">Suporte</option>
+                        <option value="Financeiro">Financeiro</option>
+                        <option value="Segurança">Segurança</option>
+                    </select>
+                </div>
+
+                <div class="campo">
+                    <label>Prioridade:</label>
+                    <select id="prioridade">
+                        <option value="Baixa">Baixa</option>
+                        <option value="Média" selected>Média</option>
+                        <option value="Alta">Alta</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="linha-dupla">
+                <div class="campo">
+                    <label>Status:</label>
+                    <select id="status">
+                        <option value="Pendente">Pendente</option>
+                        <option value="Em Andamento">Em Andamento</option>
+                        <option value="Concluída">Concluída</option>
+                    </select>
+                </div>
+
+                <div class="campo">
+                    <label>Data Limite (Prazo):</label>
+                    <input id="data_limite" type="date">
+                </div>
+
+                <div class="campo">
+                    <label>Responsável:</label>
+                    <select id="id_usuario">
+                        <option value="">-- Sem responsável --</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="margin-top: 10px;">
+                <button type="submit" id="btnSalvar">Salvar Tarefa</button>
+                <button type="button" id="btnCancelar" class="btn-cancelar" style="display: none;" onclick="limparFormulario()">Cancelar</button>
+            </div>
+        </form>
+
+        <h2>Lista de Tarefas</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 40px;">#</th>
+                    <th>Título / Descrição</th>
+                    <th>Setor</th>
+                    <th>Prioridade</th>
+                    <th>Status</th>
+                    <th>Prazo</th>
+                    <th>Responsável</th>
+                    <th style="width: 130px;">Ações</th>
+                </tr>
+            </thead>
+            <tbody id="tabela">
+                <tr><td colspan="8" style="text-align: center;">Carregando tarefas...</td></tr>
+            </tbody>
+        </table>
     </div>
 
     <script src="js/funcoes.js"></script>

@@ -1,7 +1,8 @@
--- 1. Caso precise criar o banco de dados primeiro:
+-- Banco de Dados: gestao_tarefas
+-- Caso necessário criar o banco primeiro:
 -- CREATE DATABASE gestao_tarefas;
 
--- 2. Tabela de Usuários
+-- 1. TABELA DE USUÁRIOS
 CREATE TABLE IF NOT EXISTS usuario (
     id SERIAL PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
@@ -9,27 +10,34 @@ CREATE TABLE IF NOT EXISTS usuario (
     senha TEXT NOT NULL
 );
 
--- 3. Tabela de Tarefas
+-- 2. TABELA DE TAREFAS
 CREATE TABLE IF NOT EXISTS tarefa (
     id SERIAL PRIMARY KEY,
-    titulo VARCHAR(100) NOT NULL,
+    titulo VARCHAR(150) NOT NULL,
     descricao TEXT,
-    status VARCHAR(50) NOT NULL DEFAULT 'Pendente',
+    setor VARCHAR(50) NOT NULL DEFAULT 'Geral',
     prioridade VARCHAR(20) NOT NULL DEFAULT 'Média',
-    data_criacao DATE NOT NULL DEFAULT CURRENT_DATE,
+    status VARCHAR(30) NOT NULL DEFAULT 'Pendente',
+    data_limite DATE,
     id_usuario INT REFERENCES usuario(id) ON DELETE SET NULL
 );
 
 -- ===============================================
--- DADOS INICIAIS DE TESTE (Senha para ambos: 12345)
+-- DADOS INICIAIS DE TESTE (Senha para todos: 12345)
 -- ===============================================
 
 INSERT INTO usuario (nome, login, senha) VALUES
 ('Administrador', 'admin', '$2b$10$uFxiHZ8ozdAJLyd3PI9bWegYU8VvRQ/tduLSROcbgmiagII6Khpnq'),
-('Usuario Teste', 'teste@gmail.com', '$2b$10$uFxiHZ8ozdAJLyd3PI9bWegYU8VvRQ/tduLSROcbgmiagII6Khpnq')
+('João Silva', 'joao.silva', '$2b$10$uFxiHZ8ozdAJLyd3PI9bWegYU8VvRQ/tduLSROcbgmiagII6Khpnq'),
+('Maria Santos', 'maria.santos', '$2b$10$uFxiHZ8ozdAJLyd3PI9bWegYU8VvRQ/tduLSROcbgmiagII6Khpnq'),
+('Carlos Oliveira', 'carlos.oliveira', '$2b$10$uFxiHZ8ozdAJLyd3PI9bWegYU8VvRQ/tduLSROcbgmiagII6Khpnq')
 ON CONFLICT (login) DO NOTHING;
 
-INSERT INTO tarefa (titulo, descricao, status, prioridade, data_criacao, id_usuario) VALUES
-('Configurar ambiente de desenvolvimento', 'Instalar dependências e testar conexão com o banco.', 'Concluída', 'Alta', CURRENT_DATE, 1),
-('Criar tela de login', 'Fazer formulário e conectar com a rota de autenticação.', 'Em Andamento', 'Alta', CURRENT_DATE, 1),
-('Estilizar o sistema', 'Adicionar temas e ajustar espaçamento e botões.', 'Pendente', 'Média', CURRENT_DATE, 2);
+-- TAREFAS INICIAIS
+INSERT INTO tarefa (titulo, descricao, setor, prioridade, status, data_limite, id_usuario) VALUES
+('Configurar Servidor de Produção', 'Realizar a instalação e testes dos serviços no ambiente de nuvem.', 'Infraestrutura', 'Alta', 'Em Andamento', '2026-11-05', 1),
+('Criar Telas do Módulo Financeiro', 'Desenvolver os formulários de entrada e saída de despesas.', 'Desenvolvimento', 'Média', 'Pendente', '2026-11-10', 2),
+('Revisão das Políticas de Segurança', 'Auditar os logs de acesso e revisar permissões de usuários.', 'Segurança', 'Alta', 'Pendente', '2026-11-02', 1),
+('Atualizar Documentação da API', 'Documentar novos endpoints no Swagger e gerar arquivos PDF.', 'Documentação', 'Baixa', 'Concluída', '2026-10-25', 3),
+('Treinamento da Equipe de Suporte', 'Apresentar as novas rotinas de atendimento e triagem de chamados.', 'Suporte', 'Média', 'Em Andamento', '2026-11-08', 4),
+('Backup Geral do Banco de Dados', 'Exportar dump completo e testar processo de restauração.', 'Banco de Dados', 'Alta', 'Concluída', '2026-10-26', 1);

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,53 +8,92 @@
 </head>
 <body>
     <nav>
-        <a href="index.html" class="brand">Gestão de Tarefas</a>
-        <div class="menu">
-            <a href="index.html" class="active">Início</a>
-            <a href="tarefas.html">Tarefas</a>
-            <a href="#" onclick="fazerLogout()" class="btn-sair">Sair</a>
-        </div>
+        <a href="index.html">Início</a>
+        <a href="tarefas.html">Tarefas</a>
+        <a href="usuarios.html">Usuários</a>
+        <a href="#" onclick="fazerLogout()" class="sair">Sair</a>
     </nav>
 
-    <div class="container">
-        <div class="card">
-            <h2 id="mensagemDeBoasVindas">Olá!</h2>
-            <p class="subtitulo">Bem-vindo ao seu painel de controle.</p>
+    <div class="conteudo">
+        <h2 id="mensagemDeBoasVindas">Bem-vindo!</h2>
+        <p>Visão geral do sistema de tarefas e atividades da equipe.</p>
 
-            <p style="margin-bottom: 1.5rem; color: #475569;">
-                Esta é a estrutura base simplificada do seu projeto. O backend já possui suporte a rotas de autenticação, banco de dados PostgreSQL e CRUD completo de tarefas.
-            </p>
-
-            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-                <a href="tarefas.html">
-                    <button type="button" class="btn-primario">Gerenciar Tarefas &rarr;</button>
-                </a>
+        <!-- Indicadores rápidos -->
+        <div class="resumo-cards">
+            <div class="card-item">
+                <h3 id="numTotal">0</h3>
+                <span>Total de Tarefas</span>
+            </div>
+            <div class="card-item">
+                <h3 id="numPendentes" style="color: #d97706;">0</h3>
+                <span>Pendentes</span>
+            </div>
+            <div class="card-item">
+                <h3 id="numAndamento" style="color: #0284c7;">0</h3>
+                <span>Em Andamento</span>
+            </div>
+            <div class="card-item">
+                <h3 id="numConcluidas" style="color: #16a34a;">0</h3>
+                <span>Concluídas</span>
             </div>
         </div>
 
-        <div class="form-grid">
-            <div class="card">
-                <h3>📋 Tarefas</h3>
-                <p style="color: #64748b; font-size: 0.9rem; margin-top: 0.25rem;">
-                    Visualize, cadastre, edite e remova tarefas com status e prioridades.
-                </p>
-                <div style="margin-top: 1rem;">
-                    <a href="tarefas.html" style="color: var(--primary); font-weight: 600; text-decoration: none;">Acessar lista &rarr;</a>
-                </div>
-            </div>
+        <h2>Ações Rápidas</h2>
+        <p>
+            <a href="tarefas.html"><button type="button">Gerenciar Tarefas</button></a>
+            <a href="usuarios.html"><button type="button" class="btn-cancelar">Gerenciar Usuários</button></a>
+        </p>
 
-            <div class="card">
-                <h3>⚙️ Configuração Fácil</h3>
-                <p style="color: #64748b; font-size: 0.9rem; margin-top: 0.25rem;">
-                    Altere facilmente os campos em <code>sql.sql</code>, <code>server.js</code> e nas páginas HTML.
-                </p>
-                <div style="margin-top: 1rem;">
-                    <span style="color: #10b981; font-weight: 600; font-size: 0.9rem;">Pronto para modificar</span>
-                </div>
-            </div>
-        </div>
+        <h2 style="margin-top: 30px;">Últimas Tarefas Cadastradas</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Título</th>
+                    <th>Setor</th>
+                    <th>Prioridade</th>
+                    <th>Status</th>
+                    <th>Responsável</th>
+                </tr>
+            </thead>
+            <tbody id="tabelaRecentes">
+                <tr><td colspan="6" style="text-align: center;">Carregando...</td></tr>
+            </tbody>
+        </table>
     </div>
 
     <script src="js/funcoes.js"></script>
+    <script>
+        async function carregarDashboard() {
+            // Carrega números do resumo
+            const resumo = await chamandoServer('/resumo')
+            if (resumo) {
+                document.getElementById('numTotal').textContent = resumo.total || 0
+                document.getElementById('numPendentes').textContent = resumo.pendentes || 0
+                document.getElementById('numAndamento').textContent = resumo.emAndamento || 0
+                document.getElementById('numConcluidas').textContent = resumo.concluidas || 0
+            }
+
+            // Carrega tarefas recentes
+            const tarefas = await chamandoServer('/tarefa')
+            const tbody = document.getElementById('tabelaRecentes')
+            if (Array.isArray(tarefas) && tarefas.length > 0) {
+                tbody.innerHTML = tarefas.slice(0, 5).map(t => `
+                    <tr>
+                        <td>${t.id}</td>
+                        <td><b>${t.titulo}</b></td>
+                        <td>${t.setor}</td>
+                        <td>${t.prioridade}</td>
+                        <td>${t.status}</td>
+                        <td>${t.responsavel || '-'}</td>
+                    </tr>
+                `).join('')
+            } else {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Nenhuma tarefa encontrada.</td></tr>'
+            }
+        }
+
+        carregarDashboard()
+    </script>
 </body>
 </html>
