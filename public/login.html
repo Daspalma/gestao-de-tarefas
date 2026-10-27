@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Gestão de Tarefas</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="login-wrapper">
+        <div class="login-card">
+            <h2>Gestão de Tarefas</h2>
+            <p class="subtitulo" style="text-align: center;">Acesse sua conta para continuar</p>
+
+            <form id="formularioDeLogin">
+                <label>
+                    Login
+                    <input id="login" placeholder="Ex: admin ou seu e-mail" required autocomplete="username">
+                </label>
+
+                <label>
+                    Senha
+                    <input id="senha" type="password" placeholder="Digite sua senha" required autocomplete="current-password">
+                </label>
+
+                <button type="submit" class="btn-primario" style="margin-top: 0.5rem;">Entrar</button>
+            </form>
+
+            <div class="login-dica">
+                <strong>Usuários para Teste:</strong><br>
+                Login: <code>admin</code> | Senha: <code>12345</code><br>
+                Login: <code>teste@gmail.com</code> | Senha: <code>12345</code>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/funcoes.js"></script>
+    <script src="js/login.js"></script>
+</body>
+</html>
